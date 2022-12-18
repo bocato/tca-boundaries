@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "TCABoundaries",
+    platforms: [.iOS(.v13)],
     products: [
         .library(
             name: "TCABoundaries",
