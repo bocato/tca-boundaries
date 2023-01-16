@@ -24,6 +24,48 @@ enum ExampleAction: TCAFeatureAction {
 }
 ```
 
+# Bounding Reducers
+Bounding reducers is a protocol to define a standard when implementing reducers with Boundaries.
+We can have them on composed (reducers with body) or non-composed reducers.
+
+Example for non-composed reducers:
+```swift
+struct SomeFeature: BoundingReducer {
+      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action> {
+        switch action {
+         ...
+        }
+     }
+
+    func reduce(into state: inout State, internalAction action: Action.InternalAction) -> EffectTask<Action> {
+        switch action {
+         ...
+        }
+    }
+
+    ...
+}
+```
+
+Example for composed reducers:
+```swift
+struct SomeFeature: ComposedBoundingReducer {
+      var body: some ReducerProtocol<State, Action> {
+        coreReducer
+            .ifLet(\.child, action: /Action.InternalAction.child) {
+                ChildFeature()
+            }
+      }
+
+      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action> {
+        switch action {
+         ...
+        }
+     }
+    ...
+}
+```
+
 ## Installation
 
 You can add TCABoundaries to an Xcode project by adding it as a package dependency.
