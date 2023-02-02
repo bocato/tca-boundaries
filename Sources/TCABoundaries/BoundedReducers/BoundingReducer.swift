@@ -18,10 +18,6 @@ public protocol BoundingReducer: ReducerProtocol where Action: TCAFeatureAction 
     ) -> EffectTask<Action>
 }
 
-public protocol ComposedBoundingReducer: BoundingReducer {
-    var body: some ReducerProtocol<State, Action> { get }
-}
-
 public extension BoundingReducer {
     func reduce(
         into state: inout State,
@@ -46,24 +42,4 @@ public extension BoundingReducer where Body == Never {
         return .none
     }
 }
-
-public extension ComposedBoundingReducer {
-    func reduceCore(into state: inout State, action: Action) -> EffectTask<Action> {
-        if let action = (/Action.view).extract(from: action) {
-            return reduce(into: &state, viewAction: action)
-        }
-        if let action = (/Action._internal).extract(from: action) {
-            return reduce(into: &state, internalAction: action)
-        }
-        if let action = (/Action.delegate).extract(from: action) {
-            return reduce(into: &state, delegateAction: action)
-        }
-        return .none
-    }
-    
-    var coreReducer: Reduce<State, Action> {
-        Reduce(reduceCore)
-    }
-}
-
 
