@@ -24,9 +24,61 @@ enum ExampleAction: TCAFeatureAction {
 }
 ```
 
+## Examples
+### Child flow on parent, with boundaries
+When you have a `Child` flow inside a `Parent` store and need to scope it is often expressed as an `InternalAction` of the `Parent` store.
+```swift
+enum ParentAction: TCAFeatureAction {
+    enum InternalAction: Equatable {
+    // ...
+        case child(ChildAction)
+    }
+    // ...
+    case view(ViewAction)
+    case _internal(InternalAction)
+    case delegate(DelegateAction)
+}
+```
+This will be expressed like below:
+```swift
+// On the reducer 
+Scope(state: \.child, action: /Action.InternalAction.child) {
+    ChildFeature()
+}
+// On the view
+struct ParentView: View {
+    let store: StoreOf<ParentReducer>
+    
+    var body: some View {
+        // ...
+        ChildView(
+            store.scope(
+                state: \.childState,
+                action: /ParentAction.InternalAction.child
+             )
+         )
+         // ...
+     }
+}
+```
+
+
 # Bounding Reducers
 Bounding reducers is a protocol to define a standard when implementing reducers with Boundaries.
 We can have them on composed (reducers with body) or non-composed reducers.
+
+The main idea relies on setting a standard for separating the actions based on its type on specific functions:
+
+```swift
+// To handle actions coming from the view
+func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action>
+
+// To handle actions that happen inside the reducer
+func reduce(into state: inout State, internalAction action: Action.InternalAction) -> EffectTask<Action>
+
+// To handle actions that where delegated to this reducer
+func reduce(into state: inout State, delegateAction action: Action.DelegateAction) -> EffectTask<Action>
+
 
 Example for non-composed reducers:
 ```swift
