@@ -23,7 +23,7 @@ import Foundation
 ///     case _internal(InternalAction)
 /// }
 /// ```
-public protocol TCAFeatureAction {
+public protocol TCAFeatureAction: Equatable {
     /// `ViewAction` relates  to actions that happen arround the view, being sent or received by it
     associatedtype ViewAction: Equatable
     /// `DelegateAction` relates to actions that are delegate to parent components (like the well known Delegate pattern)
