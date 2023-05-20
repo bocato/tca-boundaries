@@ -21,6 +21,11 @@ public protocol BoundingReducer: ReducerProtocol where Action: TCAFeatureAction 
 public extension BoundingReducer {
     func reduce(
         into state: inout State,
+        internalAction action: Action.InternalAction
+    ) -> ComposableArchitecture.EffectTask<Action> { .none }
+    
+    func reduce(
+        into state: inout State,
         delegateAction action: Action.DelegateAction
     ) -> EffectTask<Action> { .none }
 }
