@@ -30,17 +30,17 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// - Parameters:
     ///   - state: A function that transforms `State` into `ChildState`.
     ///   - action: A function that transforms `Action.InternalAction` into `ChildAction`.
-    ///   - child: The reducer builder for the Child.
+    ///   - child: The reducer builder for the Child.    
     @inlinable
-    public init(
-      state toChildState: WritableKeyPath<ParentState, Child.State>,
-      action toChildAction: CasePath<ParentAction.InternalAction, Child.Action>,
-      @ReducerBuilderOf<Child> _ child: () -> Child
-    ) {
-        self = .init(
-            state: toChildState,
-            action: (/ParentAction._internal).appending(path: toChildAction),
-            child
-        )
+    public init<ChildState, ChildAction>(
+      state toChildState: WritableKeyPath<ParentState, ChildState>,
+      action toChildAction: CasePath<ParentAction.InternalAction, ChildAction>,
+      @ReducerBuilder<ChildState, ChildAction> child: () -> Child
+    ) where ChildState == Child.State, ChildAction == Child.Action {
+      self.init(
+        state: toChildState,
+        action: (/ParentAction._internal).appending(path: toChildAction),
+        child: child
+      )
     }
 }
