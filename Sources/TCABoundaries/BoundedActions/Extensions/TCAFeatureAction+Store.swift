@@ -1,6 +1,15 @@
 import ComposableArchitecture
 
+/// `ViewOnlyStoreOf` For use when scoping down to a store of only `ViewAction`
+internal typealias VOStoreOf<R: BoundingReducer> = Store<R.State, R.Action.ViewAction>
+/// `ViewOnlyViewStoreOf` For use when scoping down to a viewstore of only `ViewAction`
+internal typealias VOViewStoreOf<R: BoundingReducer> = ViewStore<R.State, R.Action.ViewAction>
+
 extension Store where Action: TCAFeatureAction {
+    /// Convenience var to quickly scope a store to just it's `ViewAction`
+    public var viewScope: Store<State, Action.ViewAction> {
+        scope(state: { $0 }, action: Action.view)
+    }
     /// When you have a `Child` flow inside a `Parent` store and need to scope it is often expressed as an `InternalAction` of the `Parent` store.
     /// This can lead to a bit a an awkward API when trying to express that relation...
     /// ```swift
