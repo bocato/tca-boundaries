@@ -78,7 +78,7 @@ func reduce(into state: inout State, internalAction action: Action.InternalActio
 
 // To handle actions that where delegated to this reducer
 func reduce(into state: inout State, delegateAction action: Action.DelegateAction) -> EffectTask<Action>
-
+```
 
 Example for non-composed reducers:
 ```swift
