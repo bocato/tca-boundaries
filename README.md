@@ -1,7 +1,7 @@
 # TCABoundaries
 
 The `TCAFeatureAction` defines a pattern for actions on TCA based on https://www.merowing.info/boundries-in-tca/
-Its idea is to set a well defined specification for actions on TCA views, where ideally View and Internal actions should not go out of the view scope.
+Its idea is to set a well defined specification for actions on TCA views, where ideally View and Internal actions should not go out of the feature scope.
 
 Example:
 ```swift
