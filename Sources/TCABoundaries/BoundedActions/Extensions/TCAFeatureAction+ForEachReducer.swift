@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-extension ReducerProtocol where Action: TCAFeatureAction {
+extension Reducer where Action: TCAFeatureAction {
     /// Embeds a child reducer in a parent domain that works on elements of a collection in parent
     /// state.
     ///
@@ -8,7 +8,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     /// its core logic _and_ the child's logic by using the `forEach` operator:
     ///
     /// ```swift
-    /// struct Parent: ReducerProtocol {
+    /// struct Parent: Reducer {
     ///   struct State {
     ///     var rows: IdentifiedArrayOf<Row.State>
     ///     // ...
@@ -18,7 +18,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     ///     // ...
     ///   }
     ///
-    ///   var body: some ReducerProtocol<State, Action> {
+    ///   var body: some Reducer<State, Action> {
     ///     Reduce { state, action in
     ///       // Core logic for parent feature
     ///     }
@@ -53,7 +53,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     /// - Returns: A reducer that combines the child reducer with the parent reducer.
     @inlinable
     @warn_unqualified_access
-    public func forEach<ElementState, ElementAction, ID: Hashable, Element: ReducerProtocol>(
+    public func forEach<ElementState, ElementAction, ID: Hashable, Element: Reducer>(
       _ toElementsState: WritableKeyPath<State, IdentifiedArray<ID, ElementState>>,
       action toElementAction: CasePath<Action.InternalAction, (ID, ElementAction)>,
       @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
