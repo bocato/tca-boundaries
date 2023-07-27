@@ -22,7 +22,7 @@ public extension BoundingReducer {
     func reduce(
         into state: inout State,
         internalAction action: Action.InternalAction
-    ) -> ComposableArchitecture.Effect<Action> { .none }
+    ) -> Effect<Action> { .none }
     
     func reduce(
         into state: inout State,
