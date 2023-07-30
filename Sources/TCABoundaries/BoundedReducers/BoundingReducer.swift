@@ -1,37 +1,37 @@
 import CasePaths
 import ComposableArchitecture
 
-public protocol BoundingReducer: ReducerProtocol where Action: TCAFeatureAction {
+public protocol BoundingReducer: Reducer where Action: TCAFeatureAction {
     func reduce(
         into state: inout State,
         viewAction action: Action.ViewAction
-    ) -> EffectTask<Action>
+    ) -> Effect<Action>
     
     func reduce(
         into state: inout State,
         internalAction action: Action.InternalAction
-    ) -> EffectTask<Action>
+    ) -> Effect<Action>
     
     func reduce(
         into state: inout State,
         delegateAction action: Action.DelegateAction
-    ) -> EffectTask<Action>
+    ) -> Effect<Action>
 }
 
 public extension BoundingReducer {
     func reduce(
         into state: inout State,
         internalAction action: Action.InternalAction
-    ) -> ComposableArchitecture.EffectTask<Action> { .none }
+    ) -> Effect<Action> { .none }
     
     func reduce(
         into state: inout State,
         delegateAction action: Action.DelegateAction
-    ) -> EffectTask<Action> { .none }
+    ) -> Effect<Action> { .none }
 }
 
 public extension BoundingReducer where Body == Never {
-    func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    func reduce(into state: inout State, action: Action) -> Effect<Action> {
         if let viewAction = (/Action.view).extract(from: action) {
             return reduce(into: &state, viewAction: viewAction)
         }
