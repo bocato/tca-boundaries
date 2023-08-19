@@ -71,25 +71,25 @@ The main idea relies on setting a standard for separating the actions based on i
 
 ```swift
 // To handle actions coming from the view
-func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action>
+func reduce(into state: inout State, viewAction action: Action.ViewAction) -> Effect<Action>
 
 // To handle actions that happen inside the reducer
-func reduce(into state: inout State, internalAction action: Action.InternalAction) -> EffectTask<Action>
+func reduce(into state: inout State, internalAction action: Action.InternalAction) -> Effect<Action>
 
 // To handle actions that where delegated to this reducer
-func reduce(into state: inout State, delegateAction action: Action.DelegateAction) -> EffectTask<Action>
+func reduce(into state: inout State, delegateAction action: Action.DelegateAction) -> Effect<Action>
 ```
 
 Example for non-composed reducers:
 ```swift
 struct SomeFeature: BoundingReducer {
-      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action> {
+      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> Effect<Action> {
         switch action {
          ...
         }
      }
 
-    func reduce(into state: inout State, internalAction action: Action.InternalAction) -> EffectTask<Action> {
+    func reduce(into state: inout State, internalAction action: Action.InternalAction) -> Effect<Action> {
         switch action {
          ...
         }
@@ -102,14 +102,14 @@ struct SomeFeature: BoundingReducer {
 Example for composed reducers:
 ```swift
 struct SomeFeature: ComposedBoundingReducer {
-      var body: some ReducerProtocol<State, Action> {
+      var body: some Reducer<State, Action> {
         coreReducer
             .ifLet(\.child, action: /Action.InternalAction.child) {
                 ChildFeature()
             }
       }
 
-      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> EffectTask<Action> {
+      func reduce(into state: inout State, viewAction action: Action.ViewAction) -> Effect<Action> {
         switch action {
          ...
         }

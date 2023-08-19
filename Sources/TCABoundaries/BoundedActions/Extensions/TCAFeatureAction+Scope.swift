@@ -50,7 +50,7 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// Useful for combining child reducers into a parent.
     ///
     /// ```swift
-    /// var body: some ReducerProtocol<State, Action> {
+    /// var body: some Reducer<State, Action> {
     ///   Scope(state: \.profile, action: /Action.profile) {
     ///     Profile()
     ///   }
@@ -84,7 +84,7 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// Useful for combining reducers of mutually-exclusive enum state.
     ///
     /// ```swift
-    /// var body: some ReducerProtocol<State, Action> {
+    /// var body: some Reducer<State, Action> {
     ///   Scope(state: /State.loggedIn, action: /Action.loggedIn) {
     ///     LoggedIn()
     ///   }
@@ -117,7 +117,7 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// > ```
     /// >
     /// > If the parent domain contains additional logic for switching between cases of child state,
-    /// > prefer ``ReducerProtocol/ifCaseLet(_:action:then:fileID:line:)``, which better ensures that
+    /// > prefer ``Reducer/ifCaseLet(_:action:then:fileID:line:)``, which better ensures that
     /// > child logic runs _before_ any parent logic can replace child state:
     /// >
     /// > ```swift
@@ -153,5 +153,4 @@ extension Scope where ParentAction: TCAFeatureAction {
         line: line
       )
     }
-
 }

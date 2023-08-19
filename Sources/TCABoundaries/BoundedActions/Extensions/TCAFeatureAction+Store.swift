@@ -1,9 +1,10 @@
 import ComposableArchitecture
 
 /// `ViewOnlyStoreOf` For use when scoping down to a store of only `ViewAction`
-public typealias VOStoreOf<R: BoundingReducer> = Store<R.State, R.Action.ViewAction>
+public typealias ViewOnlyStoreOf<R: BoundingReducer> = Store<R.State, R.Action.ViewAction>
+
 /// `ViewOnlyViewStoreOf` For use when scoping down to a viewstore of only `ViewAction`
-public typealias VOViewStoreOf<R: BoundingReducer> = ViewStore<R.State, R.Action.ViewAction>
+public typealias RestrictedViewStore<R: BoundingReducer> = ViewStore<R.State, R.Action.ViewAction>
 
 extension Store where Action: TCAFeatureAction {
     /// Convenience var to quickly scope a store to just it's `ViewAction`

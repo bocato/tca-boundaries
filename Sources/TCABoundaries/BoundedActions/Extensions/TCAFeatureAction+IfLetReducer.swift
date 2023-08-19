@@ -1,13 +1,13 @@
 import ComposableArchitecture
 
-extension ReducerProtocol where Action: TCAFeatureAction {
+extension Reducer where Action: TCAFeatureAction {
     /// Embeds a child reducer in a parent domain that works on an optional property of parent state.
     ///
     /// For example, if a parent feature holds onto a piece of optional child state, then it can
     /// perform its core logic _and_ the child's logic by using the `ifLet` operator:
     ///
     /// ```swift
-    /// struct Parent: ReducerProtocol {
+    /// struct Parent: Reducer {
     ///   struct State {
     ///     var child: Child.State?
     ///     // ...
@@ -17,7 +17,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     ///     // ...
     ///   }
     ///
-    ///   var body: some ReducerProtocol<State, Action> {
+    ///   var body: some Reducer<State, Action> {
     ///     Reduce { state, action in
     ///       // Core logic for parent feature
     ///     }
@@ -41,7 +41,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     ///   * Automatically `nil`s out child state when an action is sent for alerts and confirmation
     ///     dialogs.
     ///
-    /// See ``ReducerProtocol/ifLet(_:action:destination:fileID:line:)`` for a more advanced operator
+    /// See ``Reducer/ifLet(_:action:destination:fileID:line:)`` for a more advanced operator
     /// suited to navigation.
     ///
     /// - Parameters:
@@ -53,7 +53,7 @@ extension ReducerProtocol where Action: TCAFeatureAction {
     /// - Returns: A reducer that combines the child reducer with the parent reducer.
     @inlinable
     @warn_unqualified_access
-    public func ifLet<WrappedState, WrappedAction, Wrapped: ReducerProtocol>(
+    public func ifLet<WrappedState, WrappedAction, Wrapped: Reducer>(
       _ toWrappedState: WritableKeyPath<State, WrappedState?>,
       action toWrappedAction: CasePath<Action.InternalAction, WrappedAction>,
       @ReducerBuilder<WrappedState, WrappedAction> then wrapped: () -> Wrapped,
