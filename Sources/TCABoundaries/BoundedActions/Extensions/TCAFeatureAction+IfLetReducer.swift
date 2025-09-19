@@ -21,7 +21,7 @@ extension Reducer where Action: TCAFeatureAction {
     ///     Reduce { state, action in
     ///       // Core logic for parent feature
     ///     }
-    ///     .ifLet(\.child, action: /Action.child) {
+    ///     .ifLet(\.child, action: \.child) {
     ///       Child()
     ///     }
     ///   }
@@ -55,14 +55,14 @@ extension Reducer where Action: TCAFeatureAction {
     @warn_unqualified_access
     public func ifLet<WrappedState, WrappedAction, Wrapped: Reducer>(
       _ toWrappedState: WritableKeyPath<State, WrappedState?>,
-      action toWrappedAction: CasePath<Action.InternalAction, WrappedAction>,
+      action toWrappedAction: CaseKeyPath<Action.InternalAction, WrappedAction>,
       @ReducerBuilder<WrappedState, WrappedAction> then wrapped: () -> Wrapped,
       fileID: StaticString = #fileID,
       line: UInt = #line
     ) -> _IfLetReducer<Self, Wrapped> where WrappedState == Wrapped.State, WrappedAction == Wrapped.Action {
         self.ifLet(
             toWrappedState,
-            action: (/Action._internal).appending(path: toWrappedAction),
+            action: (\Action.Cases._internal).appending(path: toWrappedAction),
             then: wrapped,
             fileID: fileID,
             line: line
@@ -73,13 +73,13 @@ extension Reducer where Action: TCAFeatureAction {
     @warn_unqualified_access
     public func ifLet<WrappedState: _EphemeralState, WrappedAction>(
         _ toWrappedState: WritableKeyPath<State, WrappedState?>,
-        action toWrappedAction: CasePath<Action.InternalAction, WrappedAction>,
+        action toWrappedAction: CaseKeyPath<Action.InternalAction, WrappedAction>,
         fileID: StaticString = #fileID,
         line: UInt = #line
     ) -> _IfLetReducer<Self, EmptyReducer<WrappedState, WrappedAction>> {
         self.ifLet(
             toWrappedState,
-            action: (/Action._internal).appending(path: toWrappedAction),
+            action: (\Action.Cases._internal).appending(path: toWrappedAction),
             fileID: fileID,
             line: line
         )

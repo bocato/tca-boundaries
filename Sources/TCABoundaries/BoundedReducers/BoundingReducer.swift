@@ -32,15 +32,15 @@ public extension BoundingReducer {
 
 public extension BoundingReducer where Body == Never {
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
-        if let viewAction = (/Action.view).extract(from: action) {
+        if let viewAction = action[case: \.view] {
             return reduce(into: &state, viewAction: viewAction)
         }
-        
-        if let internalAction = (/Action._internal).extract(from: action) {
+
+        if let internalAction = action[case: \._internal] {
             return reduce(into: &state, internalAction: internalAction)
         }
-        
-        if let delegateAction = (/Action.delegate).extract(from: action) {
+
+        if let delegateAction = action[case: \.delegate] {
             return reduce(into: &state, delegateAction: delegateAction)
         }
         
