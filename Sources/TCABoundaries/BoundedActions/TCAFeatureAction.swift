@@ -1,3 +1,4 @@
+import CasePaths
 import Foundation
 
 /// The `TCAFeatureAction` defines a pattern for actions on TCA based on https://www.merowing.info/boundries-in-tca/
@@ -23,7 +24,12 @@ import Foundation
 ///     case _internal(InternalAction)
 /// }
 /// ```
-public protocol TCAFeatureAction: Equatable {
+///
+/// Conforming types should leverage support from ``CasePathable`` (for example by annotating the
+/// reducer with ``Reducer()`` or the action enum with ``CasePathable``) so that case key paths can
+/// be composed ergonomically when interacting with the latest versions of the Composable
+/// Architecture.
+public protocol TCAFeatureAction: CasePathable, Equatable {
     /// `ViewAction` relates  to actions that happen arround the view, being sent or received by it
     associatedtype ViewAction: Equatable
     /// `DelegateAction` relates to actions that are delegate to parent components (like the well known Delegate pattern)

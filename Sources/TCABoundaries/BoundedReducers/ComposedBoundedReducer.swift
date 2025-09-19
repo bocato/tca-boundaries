@@ -7,13 +7,13 @@ public protocol ComposedBoundingReducer: BoundingReducer {
 
 public extension ComposedBoundingReducer {
     func reduceCore(into state: inout State, action: Action) -> Effect<Action> {
-        if let action = (/Action.view).extract(from: action) {
+        if let action = action[case: \.view] {
             return reduce(into: &state, viewAction: action)
         }
-        if let action = (/Action._internal).extract(from: action) {
+        if let action = action[case: \._internal] {
             return reduce(into: &state, internalAction: action)
         }
-        if let action = (/Action.delegate).extract(from: action) {
+        if let action = action[case: \.delegate] {
             return reduce(into: &state, delegateAction: action)
         }
         return .none

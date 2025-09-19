@@ -22,7 +22,7 @@ extension Reducer where Action: TCAFeatureAction {
     ///     Reduce { state, action in
     ///       // Core logic for parent feature
     ///     }
-    ///     .forEach(\.rows, action: /Action.row) {
+    ///     .forEach(\.rows, action: \.row) {
     ///       Row()
     ///     }
     ///   }
@@ -55,14 +55,14 @@ extension Reducer where Action: TCAFeatureAction {
     @warn_unqualified_access
     public func forEach<ElementState, ElementAction, ID: Hashable, Element: Reducer>(
       _ toElementsState: WritableKeyPath<State, IdentifiedArray<ID, ElementState>>,
-      action toElementAction: CasePath<Action.InternalAction, (ID, ElementAction)>,
+      action toElementAction: CaseKeyPath<Action.InternalAction, (ID, ElementAction)>,
       @ReducerBuilder<ElementState, ElementAction> element: () -> Element,
       fileID: StaticString = #fileID,
       line: UInt = #line
     ) -> _ForEachReducer<Self, ID, Element> where ElementState == Element.State, ElementAction == Element.Action {
         self.forEach(
             toElementsState,
-            action: (/Action._internal).appending(path: toElementAction),
+            action: (\Action.Cases._internal).appending(path: toElementAction),
             element: element,
             fileID: fileID,
             line: line
