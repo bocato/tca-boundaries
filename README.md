@@ -24,6 +24,73 @@ enum ExampleAction: TCAFeatureAction {
 }
 ```
 
+## Example app
+
+Below is a small counter feature that demonstrates how the boundaries pattern works together with
+the latest Composable Architecture APIs.
+
+```swift
+import ComposableArchitecture
+import TCABoundaries
+import SwiftUI
+
+@Reducer
+struct CounterFeature: BoundingReducer {
+    struct State: Equatable {
+        var count = 0
+    }
+
+    enum Action: TCAFeatureAction {
+        enum ViewAction: Equatable {
+            case decrementButtonTapped
+            case incrementButtonTapped
+        }
+
+        enum DelegateAction: Equatable {
+            case finished
+        }
+
+        enum InternalAction: Equatable {
+            case timerUpdated
+        }
+
+        case view(ViewAction)
+        case delegate(DelegateAction)
+        case _internal(InternalAction)
+    }
+
+    func reduce(into state: inout State, viewAction action: Action.ViewAction) -> Effect<Action> {
+        switch action {
+        case .decrementButtonTapped:
+            state.count -= 1
+            return .none
+
+        case .incrementButtonTapped:
+            state.count += 1
+            return .none
+        }
+    }
+}
+
+@ViewAction(for: CounterFeature.self)
+struct CounterView: View {
+    let store: StoreOf<CounterFeature>
+
+    var body: some View {
+        WithPerceptionTracking {
+            VStack {
+                Text("\(store.count)")
+
+                HStack {
+                    Button("−") { send(.decrementButtonTapped) }
+                    Button("+") { send(.incrementButtonTapped) }
+                }
+            }
+        }
+    }
+}
+```
+
 ## Examples
 ### Child flow on parent, with boundaries
 When you have a `Child` flow inside a `Parent` store and need to scope it is often expressed as an `InternalAction` of the `Parent` store.

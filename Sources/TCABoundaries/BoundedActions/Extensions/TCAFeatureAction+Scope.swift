@@ -17,29 +17,29 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// ```
     /// Without this extension we would have to write something like:
     /// ```swift
-    /// Scope(/Action._internal .. /Action.InternalAction.child) {
+    /// Scope(\Action.Cases._internal.child) {
     ///    ChildFeature()
     /// }
     /// ```
     /// With this extension we are able to get a cleaner API like below:
     /// ```swift
-    /// Scope(state: \.child, action: /Action.InternalAction.child) {
+    /// Scope(state: \.child, action: \ParentAction.Cases._internal.child) {
     ///     ChildFeature()
     /// }
     /// ```
     /// - Parameters:
-    ///   - state: A function that transforms `State` into `ChildState`.
-    ///   - action: A function that transforms `Action.InternalAction` into `ChildAction`.
+    ///   - state: A key path that transforms `State` into `ChildState`.
+    ///   - action: A case key path that transforms `Action.InternalAction` into `ChildAction`.
     ///   - child: The reducer builder for the Child.
     @inlinable
     public init(
       state toChildState: WritableKeyPath<ParentState, Child.State>,
-      action toChildAction: CasePath<ParentAction.InternalAction, Child.Action>,
+      action toChildAction: CaseKeyPath<ParentAction.InternalAction, Child.Action>,
       _ child: () -> Child
     ) {
         self = .init(
             state: toChildState,
-            action: (/ParentAction._internal).appending(path: toChildAction),
+            action: (\ParentAction.Cases._internal).appending(path: toChildAction),
             child: child
         )
     }
@@ -51,10 +51,10 @@ extension Scope where ParentAction: TCAFeatureAction {
     ///
     /// ```swift
     /// var body: some Reducer<State, Action> {
-    ///   Scope(state: \.profile, action: /Action.profile) {
+    ///   Scope(state: \.profile, action: \.profile) {
     ///     Profile()
     ///   }
-    ///   Scope(state: \.settings, action: /Action.settings) {
+    ///   Scope(state: \.settings, action: \.settings) {
     ///     Settings()
     ///   }
     ///   // ...
@@ -68,12 +68,12 @@ extension Scope where ParentAction: TCAFeatureAction {
     @inlinable
     public init<ChildState, ChildAction>(
       state toChildState: WritableKeyPath<ParentState, ChildState>,
-      action toChildAction: CasePath<ParentAction.InternalAction, ChildAction>,
+      action toChildAction: CaseKeyPath<ParentAction.InternalAction, ChildAction>,
       @ReducerBuilder<ChildState, ChildAction> child: () -> Child
     ) where ChildState == Child.State, ChildAction == Child.Action {
       self.init(
         state: toChildState,
-        action: (/ParentAction._internal).appending(path: toChildAction),
+        action: (\ParentAction.Cases._internal).appending(path: toChildAction),
         child: child
       )
     }
@@ -85,10 +85,10 @@ extension Scope where ParentAction: TCAFeatureAction {
     ///
     /// ```swift
     /// var body: some Reducer<State, Action> {
-    ///   Scope(state: /State.loggedIn, action: /Action.loggedIn) {
+    ///   Scope(state: \.loggedIn, action: \.loggedIn) {
     ///     LoggedIn()
     ///   }
-    ///   Scope(state: /State.loggedOut, action: /Action.loggedOut) {
+    ///   Scope(state: \.loggedOut, action: \.loggedOut) {
     ///     LoggedOut()
     ///   }
     /// }
@@ -111,7 +111,7 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// >   // ...
     /// >   }
     /// > }
-    /// > Scope(state: /State.loggedIn, action: /Action.loggedIn) {
+    /// > Scope(state: \.loggedIn, action: \.loggedIn) {
     /// >   LoggedIn()  // ⚠️ Logged-in domain can't handle `quitButtonTapped`
     /// > }
     /// > ```
@@ -128,7 +128,7 @@ extension Scope where ParentAction: TCAFeatureAction {
     /// >   // ...
     /// >   }
     /// > }
-    /// > .ifCaseLet(/State.loggedIn, action: /Action.loggedIn) {
+    /// > .ifCaseLet(\.loggedIn, action: \.loggedIn) {
     /// >   LoggedIn()  // ✅ Receives actions before its case can change
     /// > }
     /// > ```
@@ -139,15 +139,15 @@ extension Scope where ParentAction: TCAFeatureAction {
     ///   - child: A reducer that will be invoked with child actions against child state.
     @inlinable
     public init<ChildState, ChildAction>(
-      state toChildState: CasePath<ParentState, ChildState>,
-      action toChildAction: CasePath<ParentAction.InternalAction, ChildAction>,
+      state toChildState: CaseKeyPath<ParentState, ChildState>,
+      action toChildAction: CaseKeyPath<ParentAction.InternalAction, ChildAction>,
       @ReducerBuilder<ChildState, ChildAction> child: () -> Child,
       fileID: StaticString = #fileID,
       line: UInt = #line
     ) where ChildState == Child.State, ChildAction == Child.Action {
       self.init(
         state: toChildState,
-        action: (/ParentAction._internal).appending(path: toChildAction),
+        action: (\ParentAction.Cases._internal).appending(path: toChildAction),
         child: child,
         fileID: fileID,
         line: line
